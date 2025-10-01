@@ -1,0 +1,40 @@
+version: 2
+
+models:
+  - name: sample_ratio_mismatch
+    description: "Detects Sample Ratio Mismatch (SRM) in experiment assignments"
+    columns:
+      - name: experiment_id
+        description: "Unique identifier for the experiment"
+        tests:
+          - not_null
+      - name: expected_control_ratio
+        description: "Expected proportion of users in control"
+      - name: actual_control_ratio
+        description: "Actual proportion of users in control"
+      - name: chi_square_statistic
+        description: "Chi-square test statistic"
+      - name: has_srm
+        description: "Whether SRM is detected (p < 0.001)"
+        tests:
+          - not_null
+
+  - name: metric_anomalies
+    description: "Detects anomalous metric values in experiments"
+    columns:
+      - name: experiment_id
+        description: "Unique identifier for the experiment"
+      - name: metric_id
+        description: "Metric identifier"
+      - name: variant_id
+        description: "Experiment variant"
+      - name: metric_value
+        description: "Current metric value"
+      - name: baseline_mean
+        description: "Historical baseline mean"
+      - name: baseline_stddev
+        description: "Historical baseline standard deviation"
+      - name: z_score
+        description: "Z-score compared to baseline"
+      - name: is_anomaly
+        description: "Whether value is anomalous (|z| > 3)"

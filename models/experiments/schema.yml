@@ -1,0 +1,58 @@
+version: 2
+
+models:
+  - name: experiment_assignments
+    description: "User assignments to experiment variants"
+    columns:
+      - name: experiment_id
+        description: "Unique identifier for the experiment"
+        tests:
+          - not_null
+      - name: user_id
+        description: "Unique identifier for the user"
+        tests:
+          - not_null
+      - name: variant_id
+        description: "Variant assigned to user (control/treatment)"
+        tests:
+          - not_null
+      - name: assignment_timestamp
+        description: "When the user was assigned to the variant"
+      
+  - name: experiment_results
+    description: "Statistical analysis results for experiments"
+    columns:
+      - name: experiment_id
+        description: "Unique identifier for the experiment"
+      - name: metric_id
+        description: "Metric being analyzed"
+      - name: control_mean
+        description: "Mean metric value for control group"
+      - name: treatment_mean
+        description: "Mean metric value for treatment group"
+      - name: absolute_lift
+        description: "Absolute difference between treatment and control"
+      - name: relative_lift
+        description: "Percentage lift over control"
+      - name: p_value
+        description: "Statistical significance (p-value)"
+      - name: is_significant
+        description: "Whether result is statistically significant (p < 0.05)"
+
+  - name: experiment_summary
+    description: "High-level experiment summary with key metrics"
+    columns:
+      - name: experiment_id
+        description: "Unique identifier for the experiment"
+      - name: experiment_name
+        description: "Human-readable experiment name"
+      - name: start_date
+        description: "Experiment start date"
+      - name: end_date
+        description: "Experiment end date"
+      - name: total_users
+        description: "Total number of users in experiment"
+      - name: control_users
+        description: "Number of users in control group"
+      - name: treatment_users
+        description: "Number of users in treatment group"
