@@ -1,0 +1,52 @@
+name: 'experimentation_metric_layer'
+version: '1.0.0'
+config-version: 2
+
+# dbt project for standardized metrics and A/B testing
+profile: 'experimentation'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+target-path: "target"
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+models:
+  experimentation_metric_layer:
+    # Core metric models
+    metrics:
+      +materialized: table
+      +schema: metrics
+      +tags: ["metrics", "core"]
+    
+    # Experiment models
+    experiments:
+      +materialized: table
+      +schema: experiments
+      +tags: ["experiments"]
+    
+    # Staging models
+    staging:
+      +materialized: view
+      +schema: staging
+      +tags: ["staging"]
+
+tests:
+  +severity: warn
+
+vars:
+  # Sessionization idle timeout in minutes
+  session_idle_timeout_minutes: 30
+  
+  # Activation criteria
+  activation_actions_count: 3
+  activation_days_window: 7
+  
+  # Retention cohort windows
+  retention_day_windows: [1, 7, 14, 30]

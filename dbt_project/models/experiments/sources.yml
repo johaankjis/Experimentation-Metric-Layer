@@ -1,0 +1,57 @@
+version: 2
+
+sources:
+  - name: raw
+    tables:
+      - name: experiment_assignments
+        description: Raw experiment assignment data from experiment platform
+        columns:
+          - name: experiment_id
+            description: Unique experiment identifier
+            tests:
+              - not_null
+          - name: user_id
+            description: User identifier
+            tests:
+              - not_null
+          - name: variant
+            description: Variant name (e.g., control, treatment)
+            tests:
+              - not_null
+          - name: assigned_at
+            description: When user was assigned to variant
+          - name: exposure_timestamp
+            description: When user was first exposed to experiment
+          - name: country
+            description: User's country
+          - name: platform
+            description: User's platform
+      
+      - name: experiments
+        description: Experiment registry metadata
+        columns:
+          - name: experiment_id
+            description: Unique experiment identifier
+            tests:
+              - unique
+              - not_null
+          - name: experiment_name
+            description: Human-readable experiment name
+          - name: hypothesis
+            description: Experiment hypothesis
+          - name: start_date
+            description: Experiment start date
+          - name: end_date
+            description: Experiment end date
+          - name: status
+            description: Experiment status (draft, running, completed, stopped)
+          - name: owner
+            description: PM or DS owner
+          - name: target_metric
+            description: Primary metric for the experiment
+          - name: min_detectable_effect
+            description: Minimum detectable effect size
+          - name: statistical_power
+            description: Target statistical power
+          - name: sample_size_per_variant
+            description: Required sample size per variant

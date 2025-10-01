@@ -1,0 +1,13 @@
+# dbt and database adapter
+dbt-trino>=1.6.0
+
+# Airflow for orchestration (optional)
+apache-airflow>=2.7.0
+apache-airflow-providers-slack>=8.0.0
+
+# Data quality (optional)
+great-expectations>=0.17.0
+
+# Utilities
+pandas>=2.0.0
+numpy>=1.24.0

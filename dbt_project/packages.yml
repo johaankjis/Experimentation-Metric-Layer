@@ -1,0 +1,8 @@
+packages:
+  # dbt utils for additional tests and macros
+  - package: dbt-labs/dbt_utils
+    version: 1.1.1
+  
+  # Optional: Great Expectations for advanced data quality
+  # - package: calogica/dbt_expectations
+  #   version: 0.10.0

@@ -1,0 +1,4 @@
+experiment_id,experiment_name,hypothesis,start_date,end_date,status,owner,target_metric,min_detectable_effect,statistical_power,sample_size_per_variant,created_at,updated_at
+exp_001,Homepage CTA Color Test,Green CTA button will increase click-through rate,2024-01-01,2024-01-14,completed,pm-jane,fact_dau,0.05,0.80,10000,2024-01-01 00:00:00,2024-01-14 23:59:59
+exp_002,Onboarding Flow v2,Simplified onboarding will improve activation,2024-01-15,2024-01-29,running,pm-john,fact_activation,0.10,0.80,5000,2024-01-15 00:00:00,2024-01-15 00:00:00
+exp_003,Notification Frequency Test,Daily notifications will increase retention,2024-02-01,2024-02-21,draft,ds-alice,fact_retention,0.08,0.80,8000,2024-01-25 00:00:00,2024-01-25 00:00:00
