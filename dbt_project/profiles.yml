@@ -1,0 +1,20 @@
+experimentation:
+  target: dev
+  outputs:
+    dev:
+      type: trino
+      method: none
+      host: localhost
+      port: 8080
+      catalog: hive
+      schema: experimentation_dev
+      threads: 4
+    
+    prod:
+      type: trino
+      method: none
+      host: "{{ env_var('TRINO_HOST') }}"
+      port: 8080
+      catalog: hive
+      schema: experimentation_prod
+      threads: 8

@@ -1,0 +1,49 @@
+version: 2
+
+sources:
+  - name: raw
+    description: Raw data source tables
+    database: hive
+    schema: raw_data
+    tables:
+      - name: events
+        description: Raw event stream data
+        columns:
+          - name: event_id
+            description: Unique identifier for each event
+            tests:
+              - unique
+              - not_null
+          - name: user_id
+            description: User identifier
+            tests:
+              - not_null
+          - name: event_timestamp
+            description: Timestamp when event occurred
+            tests:
+              - not_null
+          - name: event_name
+            description: Name of the event
+          - name: event_properties
+            description: JSON properties of the event
+          - name: session_id
+            description: Session identifier
+          - name: platform
+            description: Platform where event occurred
+          - name: country
+            description: Country of the user
+          - name: created_at
+            description: When record was created in database
+      
+      - name: users
+        description: User dimension table
+        columns:
+          - name: user_id
+            description: Unique user identifier
+            tests:
+              - unique
+              - not_null
+          - name: signup_date
+            description: Date user signed up
+          - name: country
+            description: User's country

@@ -1,0 +1,198 @@
+version: 2
+
+models:
+  - name: fact_dau
+    description: Daily Active Users - Canonical metric definition
+    columns:
+      - name: activity_date
+        description: Date of activity
+        tests:
+          - not_null
+      - name: user_id
+        description: User identifier
+        tests:
+          - not_null
+      - name: event_count
+        description: Number of events for this user on this day
+        tests:
+          - not_null
+      - name: is_active
+        description: Flag indicating user is active (always 1 for DAU)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1]
+      - name: metric_value
+        description: Metric value for experimentation (event count)
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - activity_date
+            - user_id
+
+  - name: fact_wau
+    description: Weekly Active Users - Canonical metric definition
+    columns:
+      - name: week_start
+        description: Start of the week
+        tests:
+          - not_null
+      - name: user_id
+        description: User identifier
+        tests:
+          - not_null
+      - name: event_count
+        description: Number of events for this user this week
+        tests:
+          - not_null
+      - name: active_days
+        description: Number of active days in the week
+        tests:
+          - not_null
+      - name: is_active
+        description: Flag indicating user is active (always 1 for WAU)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1]
+      - name: metric_value
+        description: Metric value for experimentation (event count)
+        tests:
+          - not_null
+
+  - name: fact_mau
+    description: Monthly Active Users - Canonical metric definition
+    columns:
+      - name: month_start
+        description: Start of the month
+        tests:
+          - not_null
+      - name: user_id
+        description: User identifier
+        tests:
+          - not_null
+      - name: event_count
+        description: Number of events for this user this month
+        tests:
+          - not_null
+      - name: active_days
+        description: Number of active days in the month
+        tests:
+          - not_null
+      - name: is_active
+        description: Flag indicating user is active (always 1 for MAU)
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1]
+      - name: metric_value
+        description: Metric value for experimentation (event count)
+        tests:
+          - not_null
+
+  - name: fact_activation
+    description: User Activation Metric - Canonical definition
+    columns:
+      - name: user_id
+        description: User identifier
+        tests:
+          - unique
+          - not_null
+      - name: signup_date
+        description: Date user signed up
+        tests:
+          - not_null
+      - name: action_count
+        description: Number of actions in activation window
+        tests:
+          - not_null
+      - name: is_activated
+        description: Binary flag indicating if user is activated
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: metric_value
+        description: Metric value for experimentation (is_activated)
+        tests:
+          - not_null
+
+  - name: fact_retention
+    description: Retention Cohort Analysis - Canonical definition
+    columns:
+      - name: user_id
+        description: User identifier
+        tests:
+          - unique
+          - not_null
+      - name: signup_date
+        description: Date user signed up
+        tests:
+          - not_null
+      - name: retained_day_1
+        description: Whether user was active on day 1
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: retained_day_7
+        description: Whether user was active on day 7
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: retained_day_14
+        description: Whether user was active on day 14
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: retained_day_30
+        description: Whether user was active on day 30
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: metric_value
+        description: Metric value for experimentation (day 7 retention)
+        tests:
+          - not_null
+
+  - name: fact_sessions
+    description: Sessionization - Canonical definition
+    columns:
+      - name: user_id
+        description: User identifier
+        tests:
+          - not_null
+      - name: session_number
+        description: Sequential session number for user
+        tests:
+          - not_null
+      - name: session_start
+        description: Timestamp of first event in session
+        tests:
+          - not_null
+      - name: session_end
+        description: Timestamp of last event in session
+        tests:
+          - not_null
+      - name: event_count
+        description: Number of events in session
+        tests:
+          - not_null
+      - name: session_duration_minutes
+        description: Duration of session in minutes
+        tests:
+          - not_null
+      - name: metric_value
+        description: Metric value for experimentation (session duration)
+        tests:
+          - not_null
+    tests:
+      - dbt_utils.unique_combination_of_columns:
+          combination_of_columns:
+            - user_id
+            - session_number

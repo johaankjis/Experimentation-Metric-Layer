@@ -1,0 +1,124 @@
+version: 2
+
+# Custom data quality tests for anomaly detection
+# These tests will alert on unexpected data patterns
+
+tests:
+  - name: dau_volume_check
+    description: Alert if DAU count drops below threshold
+    test:
+      sql: |
+        with daily_counts as (
+          select
+            activity_date,
+            count(distinct user_id) as dau_count
+          from {{ ref('fact_dau') }}
+          where activity_date = current_date - interval '1' day
+          group by 1
+        )
+        select *
+        from daily_counts
+        where dau_count < 1000  -- Adjust threshold based on your product
+    severity: error
+
+  - name: activation_rate_check
+    description: Alert if activation rate is anomalously low
+    test:
+      sql: |
+        with recent_cohort as (
+          select
+            count(*) as total_users,
+            sum(is_activated) as activated_users,
+            sum(is_activated) * 1.0 / count(*) as activation_rate
+          from {{ ref('fact_activation') }}
+          where signup_date >= current_date - interval '7' day
+        )
+        select *
+        from recent_cohort
+        where activation_rate < 0.20  -- Adjust threshold based on baseline
+    severity: warn
+
+  - name: retention_rate_check
+    description: Alert if retention rate drops significantly
+    test:
+      sql: |
+        with recent_cohort as (
+          select
+            avg(retained_day_7) as day7_retention
+          from {{ ref('fact_retention') }}
+          where signup_date >= current_date - interval '14' day
+        )
+        select *
+        from recent_cohort
+        where day7_retention < 0.30  -- Adjust threshold based on baseline
+    severity: warn
+
+  - name: session_duration_outliers
+    description: Alert if there are too many outlier sessions
+    test:
+      sql: |
+        with session_stats as (
+          select
+            avg(session_duration_minutes) as avg_duration,
+            stddev(session_duration_minutes) as stddev_duration,
+            count(*) as total_sessions
+          from {{ ref('fact_sessions') }}
+          where session_start >= current_date - interval '1' day
+        ),
+        outliers as (
+          select
+            count(*) as outlier_count
+          from {{ ref('fact_sessions') }}
+          cross join session_stats
+          where session_start >= current_date - interval '1' day
+            and abs(session_duration_minutes - session_stats.avg_duration) > 3 * session_stats.stddev_duration
+        )
+        select *
+        from outliers
+        where outlier_count * 1.0 / (select total_sessions from session_stats) > 0.05
+    severity: warn
+
+  - name: experiment_assignment_balance
+    description: Alert if experiment assignments are imbalanced (SRM)
+    test:
+      sql: |
+        with variant_counts as (
+          select
+            experiment_id,
+            variant,
+            count(*) as user_count
+          from {{ ref('experiment_assignments') }}
+          where assigned_at >= current_date - interval '7' day
+          group by 1, 2
+        ),
+        imbalanced_experiments as (
+          select
+            experiment_id,
+            max(user_count) * 1.0 / min(user_count) as imbalance_ratio
+          from variant_counts
+          group by 1
+          having count(distinct variant) >= 2
+        )
+        select *
+        from imbalanced_experiments
+        where imbalance_ratio > 1.10  -- Allow 10% imbalance
+    severity: error
+
+  - name: null_spike_detection
+    description: Alert if there's a spike in null values for key metrics
+    test:
+      sql: |
+        with event_stats as (
+          select
+            date(event_timestamp) as event_date,
+            count(*) as total_events,
+            count(user_id) as events_with_user_id,
+            (count(*) - count(user_id)) * 1.0 / count(*) as null_rate
+          from {{ source('raw', 'events') }}
+          where event_timestamp >= current_date - interval '1' day
+          group by 1
+        )
+        select *
+        from event_stats
+        where null_rate > 0.05  -- Alert if more than 5% null
+    severity: error
