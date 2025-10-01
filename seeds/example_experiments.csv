@@ -1,0 +1,4 @@
+experiment_id,experiment_name,start_date,end_date,primary_metric_id,hypothesis,control_ratio,treatment_ratio
+exp_001,Checkout Flow Redesign,2024-01-01,2024-01-14,conversion_rate,New checkout flow will increase conversions by 5%,0.5,0.5
+exp_002,Premium Feature Test,2024-01-15,2024-01-28,revenue_per_user,Premium features will increase ARPU by 10%,0.5,0.5
+exp_003,Onboarding Optimization,2024-02-01,,retention_rate,Improved onboarding increases D7 retention,0.5,0.5
