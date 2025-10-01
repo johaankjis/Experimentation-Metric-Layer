@@ -1,0 +1,45 @@
+version: 2
+
+models:
+  - name: metric_definitions
+    description: "Canonical metric definitions for experimentation"
+    columns:
+      - name: metric_id
+        description: "Unique identifier for the metric"
+        tests:
+          - unique
+          - not_null
+      - name: metric_name
+        description: "Human-readable metric name"
+      - name: metric_type
+        description: "Type of metric (ratio, count, average, etc.)"
+      - name: numerator_sql
+        description: "SQL expression for metric numerator"
+      - name: denominator_sql
+        description: "SQL expression for metric denominator (for ratio metrics)"
+      - name: is_guardrail
+        description: "Whether this is a guardrail metric"
+
+  - name: metric_calculations
+    description: "Calculated metric values per experiment and variant"
+    columns:
+      - name: experiment_id
+        description: "Unique identifier for the experiment"
+        tests:
+          - not_null
+      - name: variant_id
+        description: "Experiment variant (control/treatment)"
+        tests:
+          - not_null
+      - name: metric_id
+        description: "Reference to metric definition"
+        tests:
+          - not_null
+      - name: metric_value
+        description: "Calculated metric value"
+      - name: sample_size
+        description: "Number of observations"
+      - name: confidence_interval_lower
+        description: "Lower bound of 95% confidence interval"
+      - name: confidence_interval_upper
+        description: "Upper bound of 95% confidence interval"

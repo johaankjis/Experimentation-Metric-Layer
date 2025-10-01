@@ -1,0 +1,49 @@
+version: 2
+
+sources:
+  - name: raw
+    description: "Raw data sources from production databases"
+    database: experimentation
+    schema: raw
+    tables:
+      - name: experiments
+        description: "Experiment configuration and metadata"
+        columns:
+          - name: experiment_id
+            description: "Unique identifier for the experiment"
+          - name: experiment_name
+            description: "Human-readable experiment name"
+          - name: start_date
+            description: "Experiment start date"
+          - name: end_date
+            description: "Experiment end date (NULL if still running)"
+          - name: primary_metric_id
+            description: "Primary success metric for the experiment"
+          - name: hypothesis
+            description: "Experiment hypothesis"
+          - name: control_ratio
+            description: "Expected proportion of users in control (default 0.5)"
+          - name: treatment_ratio
+            description: "Expected proportion of users in treatment (default 0.5)"
+            
+      - name: user_events
+        description: "User interaction events"
+        columns:
+          - name: event_id
+            description: "Unique identifier for the event"
+          - name: user_id
+            description: "User identifier"
+          - name: event_timestamp
+            description: "When the event occurred"
+          - name: event_type
+            description: "Type of event"
+          - name: session_id
+            description: "Session identifier"
+          - name: converted
+            description: "Whether this event resulted in a conversion"
+          - name: revenue
+            description: "Revenue generated from this event"
+          - name: error_occurred
+            description: "Whether an error occurred"
+          - name: page_load_time_ms
+            description: "Page load time in milliseconds"
